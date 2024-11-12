@@ -1,14 +1,15 @@
+
 import {createElement} from '../render.js';
 
-//Шаблон списка для точек маршрута
-function createPointListViewTemplate() {
+//создать список точек маршрута
+function createPointListTemplate() {
   return '<ul class="trip-events__list"></ul>';
 }
 
-//Класс для взаимодействия со списком точек маршрута
+//класс для взаимодействия со списком точек маршрута
 export default class PointListView {
   getTemplate() {
-    return createPointListViewTemplate();
+    return createPointListTemplate();
   }
 
   getElement() {
