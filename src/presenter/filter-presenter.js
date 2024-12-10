@@ -1,14 +1,17 @@
 import {render} from '../framework/render.js';
 import FilterListView from '../view/filter.js';
-import {FiltersType} from '../const';
+import {generateFilter} from '../utils/filter';
 
 //класс для взаимодействия данных и интерфейса фильтра точек маршрута
 export default class FilterPresenter {
   #filterContainer = null;
-  #filters = Object.entries(FiltersType).map(([type]) => ({type}));
+  #tripModel = null;
+  #filters = [];
 
-  constructor({filterContainer}) {
+  constructor({filterContainer, tripModel}) {
     this.#filterContainer = filterContainer;
+    this.#tripModel = tripModel;
+    this.#filters = generateFilter(tripModel.points);
   }
 
   init() {

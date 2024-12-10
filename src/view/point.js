@@ -1,6 +1,7 @@
-import {DateFormat} from '../const.js';
-import AbstractView from '../framework/view/abstract-view.js';
-import {getDifferenceInTime, getElementById, getElementByType, convertDate} from '../utils.js';
+import {DateFormat} from '../const';
+import AbstractView from '../framework/view/abstract-view';
+import {getElementById, getElementByType} from '../utils/common';
+import {getDifferenceInTime, convertDate} from '../utils/date';
 
 //создать элемент списка для дополнительного предложения
 function createOfferTemplate({title, price}) {

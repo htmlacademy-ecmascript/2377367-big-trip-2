@@ -1,5 +1,5 @@
 import {POINTS_COUNT} from '../const';
-import {getRandomArrayElement, getRandomInteger} from '../utils';
+import {getRandomArrayElement, getRandomInteger} from '../utils/common';
 import {getRandomOffers} from './offers';
 
 //список точек маршрута

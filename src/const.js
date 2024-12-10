@@ -23,6 +23,20 @@ const FiltersType = {
   PAST: 'past',
 };
 
+const SystemMessagesLoad = {
+  LOAD: 'load',
+  FAILED_LOAD: 'Failed to load',
+};
+
+const SystemMessages = {
+  [FiltersType.EVERYTHING]: 'Click New Event to create your first point',
+  [FiltersType.PAST]: 'There are no past events now',
+  [FiltersType.PRESENT]: 'There are no present events now',
+  [FiltersType.FUTURE]: 'There are no future events now',
+  [SystemMessagesLoad.LOAD]: 'Loading...',
+  [SystemMessagesLoad.FAILED_LOAD]: 'Failed to load latest route information',
+};
+
 const DEFAULT_FILTER = FiltersType.EVERYTHING;
 
 const SORT_TYPE = ['day', 'event', 'time', 'price', 'offers'];
@@ -44,5 +58,7 @@ export {
   SORT_TYPE,
   DEFAULT_SORT,
   POINTS_TYPE,
-  COUNT_DESTINATIONS_NAMES
+  COUNT_DESTINATIONS_NAMES,
+  SystemMessagesLoad,
+  SystemMessages
 };

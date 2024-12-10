@@ -1,7 +1,7 @@
-
-import {DateFormat, POINTS_TYPE} from '../const.js';
-import AbstractView from '../framework/view/abstract-view.js';
-import {capitalize, getElementById, getElementByType, convertDate} from '../utils.js';
+import {DateFormat, POINTS_TYPE} from '../const';
+import AbstractView from '../framework/view/abstract-view';
+import {capitalize, getElementById, getElementByType} from '../utils/common';
+import {convertDate} from '../utils/date';
 
 //создать элемент списка для типов точек маршрута
 function createTypeTemplate(type, checkedType, id) {
@@ -66,7 +66,7 @@ function createPhotoContainerTemplate(pictures) {
 
 //создать блок с описанием точки маршрута
 function createDestinationTemplate(destination) {
-  const { description, pictures } = destination || {};
+  const {description, pictures} = destination || {};
 
   if (description.length > 0 || pictures.length > 0) {
     return (
@@ -84,10 +84,10 @@ function createDestinationTemplate(destination) {
 
 //создать форму редактирования точек маршрута
 function createEditPointTemplate(point, offers, destinations) {
-  const { id, type, dateFrom, dateTo, basePrice, offers: checkedOffersId, destination: pointDestination } = point;
+  const {id, type, dateFrom, dateTo, basePrice, offers: checkedOffersId, destination: pointDestination} = point;
   const filteredOfferByType = getElementByType(offers, type);
   const filteredDestinationById = getElementById(destinations, pointDestination);
-  const { name } = filteredDestinationById;
+  const {name} = filteredDestinationById;
 
   return (
     `<li class="trip-events__item">
