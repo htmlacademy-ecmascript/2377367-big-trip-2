@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import {getDestinationNames, getFullPrice, getMaxDate, getMinDate} from '../utils.js';
 import {COUNT_DESTINATIONS_NAMES} from '../const';
 
@@ -30,27 +30,20 @@ function createInfoTemplate(points, offers, destinations) {
   );
 }
 
-//класс для взаимодействия с информацией о маршруте
-export default class InfoView {
+//класс для визуального представления информациии о маршруте
+export default class InfoView extends AbstractView {
+  #points = [];
+  #offers = [];
+  #destinations = [];
+
   constructor({points, offers, destinations}) {
-    this.points = points;
-    this.offers = offers;
-    this.destinations = destinations;
+    super();
+    this.#points = points;
+    this.#offers = offers;
+    this.#destinations = destinations;
   }
 
-  getTemplate() {
-    return createInfoTemplate(this.points, this.offers, this.destinations);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createInfoTemplate(this.#points, this.#offers, this.#destinations);
   }
 }
