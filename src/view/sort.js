@@ -1,5 +1,5 @@
-import { SORT_TYPE, DEFAULT_SORT } from '../const.js';
-import {createElement} from '../render.js';
+import {SORT_TYPE, DEFAULT_SORT} from '../const.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 //создать элемент списка сортировки точек маршрута
 function createSortItemTemplate(type) {
@@ -22,20 +22,9 @@ function createSortListTemplate() {
   );
 }
 
-export default class SortView {
-  getTemplate() {
+//класс для визуального представления сортировки точек маршрута
+export default class SortListView extends AbstractView {
+  get template() {
     return createSortListTemplate();
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

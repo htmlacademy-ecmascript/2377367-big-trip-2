@@ -1,8 +1,10 @@
-import { DEFAULT_FILTER, FILTERS_TYPE } from '../const.js';
-import {createElement} from '../render.js';
+
+import {DEFAULT_FILTER} from '../const.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 //создать элемент списка фильтров
-function createFilterItemTemplate(type) {
+function createFilterItemTemplate(filter) {
+  const {type} = filter;
   const isChecked = DEFAULT_FILTER === type ? 'checked' : '';
 
   return (
@@ -14,30 +16,26 @@ function createFilterItemTemplate(type) {
 }
 
 //создать список фильтров
-function createFilterListTemplate() {
+function createFiltersTemplate(filters) {
+  const filtersTemplate = filters.map((filter) => createFilterItemTemplate(filter)).join('');
   return (
     `<form class="trip-filters" action="#" method="get">
-      ${FILTERS_TYPE.map((type) => createFilterItemTemplate(type)).join('')}
+      ${filtersTemplate}
       <button class="visually-hidden" type="submit">Accept filter</button>
     </form>`
   );
 }
 
-//класс для взаимодействия с фильтром точек маршрута
-export default class FilterView {
-  getTemplate() {
-    return createFilterListTemplate();
+//класс для визуального представления фильтра точек маршрута
+export default class FilterListView extends AbstractView {
+  #filters = [];
+
+  constructor({filters}) {
+    super();
+    this.#filters = filters;
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createFiltersTemplate(this.#filters);
   }
 }

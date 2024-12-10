@@ -1,7 +1,6 @@
-
-import { DateFormat } from '../const.js';
-import {createElement} from '../render.js';
-import { getDifferenceInTime, getElementById, getElementByType, convertDate } from '../utils.js';
+import {DateFormat} from '../const.js';
+import AbstractView from '../framework/view/abstract-view.js';
+import {getDifferenceInTime, getElementById, getElementByType, convertDate} from '../utils.js';
 
 //создать элемент списка для дополнительного предложения
 function createOfferTemplate({title, price}) {
@@ -15,8 +14,8 @@ function createOfferTemplate({title, price}) {
 }
 
 //создать точку маршрута
-function createPointTemplate(points, offers, destinations) {
-  const { type, dateFrom, dateTo, isFavorite, basePrice, offers: pointOffers, destination: pointDestination } = points;
+function createPointTemplate(point, offers, destinations) {
+  const { type, dateFrom, dateTo, isFavorite, basePrice, offers: pointOffers, destination: pointDestination } = point;
   const filteredDestinationById = getElementById(destinations, pointDestination);
   const { name } = filteredDestinationById;
   const filteredOffersById = getElementById(getElementByType(offers, type).offers, pointOffers);
@@ -58,27 +57,28 @@ function createPointTemplate(points, offers, destinations) {
   );
 }
 
-//класс для взаимодействия с точкой маршрута
-export default class PointView {
-  constructor({point, offers, destinations}) {
-    this.point = point;
-    this.offers = offers;
-    this.destinations = destinations;
+//класс для визуального представления с точки маршрута
+export default class PointView extends AbstractView {
+  #point = null;
+  #offers = [];
+  #destinations = [];
+  #onButtonEditClick = () => {};
+
+  constructor({point, offers, destinations, onButtonEditClick}) {
+    super();
+    this.#point = point;
+    this.#offers = offers;
+    this.#destinations = destinations;
+    this.#onButtonEditClick = onButtonEditClick;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
   }
 
-  getTemplate() {
-    return createPointTemplate(this.point, this.offers, this.destinations);
+  get template() {
+    return createPointTemplate(this.#point, this.#offers, this.#destinations);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#onButtonEditClick();
+  };
 }

@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 //создать форму создания точек маршрута
 function createAddPointTemplate() {
@@ -154,11 +154,11 @@ function createAddPointTemplate() {
 
             <div class="event__photos-container">
               <div class="event__photos-tape">
-                <img class="event__photo" src="img/photos/1.jpg" alt="Event photo">
-                <img class="event__photo" src="img/photos/2.jpg" alt="Event photo">
-                <img class="event__photo" src="img/photos/3.jpg" alt="Event photo">
-                <img class="event__photo" src="img/photos/4.jpg" alt="Event photo">
-                <img class="event__photo" src="img/photos/5.jpg" alt="Event photo">
+                <img class="event__photo" src="https://22.objects.htmlacademy.pro/static/destinations/2.jpg'" alt="Event photo">
+                <img class="event__photo" src="https://22.objects.htmlacademy.pro/static/destinations/3.jpg'" alt="Event photo">
+                <img class="event__photo" src="https://22.objects.htmlacademy.pro/static/destinations/4.jpg'" alt="Event photo">
+                <img class="event__photo" src="https://22.objects.htmlacademy.pro/static/destinations/7.jpg'" alt="Event photo">
+                <img class="event__photo" src="https://22.objects.htmlacademy.pro/static/destinations/8.jpg'" alt="Event photo">
               </div>
             </div>
           </section>
@@ -168,21 +168,9 @@ function createAddPointTemplate() {
   );
 }
 
-//класс для взаимодействия с формой создания точек маршрута
-export default class AddPointView {
-  getTemplate() {
+//класс для визуального представления формы создания точек маршрута
+export default class PointAddView extends AbstractView {
+  get template() {
     return createAddPointTemplate();
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }
