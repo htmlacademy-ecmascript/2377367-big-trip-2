@@ -1,5 +1,6 @@
-import AbstractView from '../framework/view/abstract-view.js';
-import {getDestinationNames, getFullPrice, getMaxDate, getMinDate} from '../utils.js';
+import AbstractView from '../framework/view/abstract-view';
+import {getDestinationNames, getFullPrice} from '../utils/common';
+import {getMaxDate, getMinDate} from '../utils/date';
 import {COUNT_DESTINATIONS_NAMES} from '../const';
 
 //создать заголовок из списка пунктов назначения
