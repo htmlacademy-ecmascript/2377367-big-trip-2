@@ -1,5 +1,5 @@
 //список дополнительных предложений
-import {getElementByType, getRandomInteger, shuffle, changeLengthRandom} from '../utils/common';
+import {getElementByType, getRandomInteger, shuffle, changeLengthRandom} from '../utils/common.js';
 
 const mockOffers = [
   {
