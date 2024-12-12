@@ -3,7 +3,7 @@ import minMax from 'dayjs/plugin/minMax';
 import duration from 'dayjs/plugin/duration';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-import {DateFormat, MILLISECONDS_IN_HOUR, MILLISECONDS_IN_DAY} from '../const';
+import {DateFormat, MILLISECONDS_IN_HOUR, MILLISECONDS_IN_DAY} from '../const.js';
 
 dayjs.extend(minMax);
 dayjs.extend(duration);
@@ -33,11 +33,15 @@ function convertDate(date, format) {
 //получить разницу во времени
 function getDifferenceInTime(start, end) {
   const difference = dayjs(end).diff(start);
+
   if (difference < MILLISECONDS_IN_HOUR) {
     return dayjs.duration(difference).format(DateFormat.MINUTES_WITH_POSTFIX);
-  } else if (difference < MILLISECONDS_IN_DAY) {
+  }
+
+  if (difference < MILLISECONDS_IN_DAY) {
     return dayjs.duration(difference).format(DateFormat.HOUR_MINUTES_WITH_POSTFIX);
   }
+
   return dayjs.duration(difference).format(DateFormat.DAY_HOUR_MINUTES_WITH_POSTFIX);
 }
 

@@ -7,6 +7,7 @@ function createFilterItemTemplate(filter) {
   const {type, count} = filter;
   const isChecked = DEFAULT_FILTER === type ? 'checked' : '';
   const isDisabled = count === 0 ? 'disabled' : '';
+
   return (
     `<div class="trip-filters__filter">
       <input id="filter-${type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" ${isChecked} ${isDisabled}>
@@ -18,6 +19,7 @@ function createFilterItemTemplate(filter) {
 //создать список фильтров
 function createFiltersTemplate(filters) {
   const filtersTemplate = filters.map((filter) => createFilterItemTemplate(filter)).join('');
+
   return (
     `<form class="trip-filters" action="#" method="get">
       ${filtersTemplate}

@@ -1,6 +1,6 @@
-import {POINTS_COUNT} from '../const';
-import {getRandomArrayElement, getRandomInteger} from '../utils/common';
-import {getRandomOffers} from './offers';
+import {POINTS_COUNT} from '../const.js';
+import {getRandomArrayElement, getRandomInteger} from '../utils/common.js';
+import {getRandomOffers} from './offers.js';
 
 //список точек маршрута
 const mockPoints = [
