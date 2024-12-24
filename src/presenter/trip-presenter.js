@@ -1,23 +1,25 @@
 import {render} from '../framework/render.js';
-import {Messages} from '../const.js';
+import {Messages, SortTypes} from '../const.js';
 import SortListView from '../view/sort.js';
 import PointListView from '../view/point-list.js';
 import MessageView from '../view/message.js';
 import PointPresenter from './point-presenter.js';
-import {updateItem} from '../utils/common.js';
+import {sortByPrice, updateItem} from '../utils/common.js';
+import {sortByTime} from '../utils/date.js';
 
 //класс для взаимодействия данных и интерфейса списка точек маршрута
 export default class TripPresenter {
   #points = [];
+  #originalPoints = [];
   #offers = [];
   #destinations = [];
 
   #tripContainer = null;
   #tripModel = null;
   #systemMessageComponent = null;
+  #sortListComponent = null;
 
   #pointListComponent = new PointListView();
-  #sortListComponent = new SortListView();
   #pointPresenters = new Map();
 
   constructor({tripContainer, tripModel}) {
@@ -27,11 +29,13 @@ export default class TripPresenter {
 
   init() {
     this.#points = [...this.#tripModel.points];
+    this.#originalPoints = [...this.#tripModel.points];
     this.#offers = [...this.#tripModel.offers];
     this.#destinations = [...this.#tripModel.destinations];
 
     this.#renderTrip();
   }
+
 
   #renderPoint(point) {
     const pointPresenter = new PointPresenter({
@@ -55,6 +59,35 @@ export default class TripPresenter {
     this.#pointPresenters.forEach((pointPresenter) => pointPresenter.reset());
   };
 
+  #sortPoints(type) {
+    switch (type) {
+      case SortTypes.TIME:
+        this.#points.sort(sortByTime);
+        break;
+      case SortTypes.PRICE:
+        this.#points.sort(sortByPrice);
+        break;
+      default:
+        this.#points = [...this.#originalPoints];
+    }
+  }
+
+  #renderSort() {
+    this.#sortListComponent = new SortListView({ onSortTypeChange: this.#sortTypeChangeHandle});
+    render(this.#sortListComponent, this.#tripContainer);
+  }
+
+  #clearPointList() {
+    this.#pointPresenters.forEach((presenter) => presenter.destroy());
+    this.#pointPresenters.clear();
+  }
+
+  #sortTypeChangeHandle = (type) => {
+    this.#sortPoints(type);
+    this.#clearPointList();
+    this.#renderPointsList();
+  };
+
   #renderSystemMessage({text}) {
     this.#systemMessageComponent = new MessageView({text});
     render(this.#systemMessageComponent, this.#tripContainer);
@@ -74,7 +107,7 @@ export default class TripPresenter {
       return;
     }
 
-    render(this.#sortListComponent, this.#tripContainer);
+    this.#renderSort();
     this.#renderPointsList();
   }
 }

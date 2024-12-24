@@ -32,9 +32,15 @@ const Messages = {
 
 const DEFAULT_FILTER = FiltersType.EVERYTHING;
 
-const SORT_TYPE = ['day', 'event', 'time', 'price', 'offers'];
+const SortTypes = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers',
+};
 
-const DEFAULT_SORT = SORT_TYPE[0];
+const DEFAULT_SORT = SortTypes.DAY;
 
 const POINTS_TYPE = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
@@ -53,7 +59,7 @@ export {
   DateFormat,
   FiltersType,
   DEFAULT_FILTER,
-  SORT_TYPE,
+  SortTypes,
   DEFAULT_SORT,
   POINTS_TYPE,
   COUNT_DESTINATIONS_NAMES,

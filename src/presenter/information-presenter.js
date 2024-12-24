@@ -1,7 +1,7 @@
 import {RenderPosition, render} from '../framework/render.js';
 import InfoView from '../view/information.js';
 
-///класс для взаимодействия данных и интерфейса информациии о маршруте
+///класс для взаимодействия данных и интерфейса информации о маршруте
 export default class InfoPresenter {
   #infoContainer = null;
   #tripModel = null;

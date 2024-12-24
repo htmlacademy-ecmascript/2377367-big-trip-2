@@ -31,7 +31,7 @@ function createInfoTemplate(points, offers, destinations) {
   );
 }
 
-//класс для визуального представления информациии о маршруте
+//класс для визуального представления информации о маршруте
 export default class InfoView extends AbstractView {
   #points = [];
   #offers = [];
