@@ -26,7 +26,7 @@ export default class PointPresenter {
     this.#destinations = destinations;
   }
 
-  init (point) {
+  init(point) {
     this.#point = point;
 
     const prevPointComponent = this.#pointComponent;
@@ -69,6 +69,7 @@ export default class PointPresenter {
 
   reset() {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToPoint();
     }
   }
@@ -94,6 +95,7 @@ export default class PointPresenter {
   #escKeyDownHandler = (event) => {
     if (isEscape(event)) {
       event.preventDefault();
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToPoint();
     }
   };

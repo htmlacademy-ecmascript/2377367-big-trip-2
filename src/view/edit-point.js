@@ -1,7 +1,7 @@
-import {DateFormat, POINTS_TYPE} from '../const';
-import AbstractView from '../framework/view/abstract-view';
-import {capitalize, getElementById, getElementByType} from '../utils/common';
-import {convertDate} from '../utils/date';
+import {DateFormat, POINTS_TYPE} from '../const.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import {capitalize, getElementById, getElementByType} from '../utils/common.js';
+import {convertDate} from '../utils/date.js';
 
 //создать элемент списка для типов точек маршрута
 function createTypeTemplate(type, checkedType, id) {
@@ -18,7 +18,7 @@ function createTypeTemplate(type, checkedType, id) {
 //создать элемент для списка дополнительных предложений
 function createOfferTemplate(offer, checkedOffersId) {
   const {id, title, price} = offer;
-  const isChecked = checkedOffersId.includes(id) ? 'checked' : '';
+  const isChecked = checkedOffersId.has(id) ? 'checked' : '';
 
   return (
     `<div class="event__offer-selector">
@@ -151,36 +151,103 @@ function createEditPointTemplate(point, offers, destinations) {
 }
 
 //класс для визуального представления формой редактирования точек маршрута
-export default class PointEditView extends AbstractView {
-  #point = null;
+export default class PointEditView extends AbstractStatefulView {
   #offers = [];
   #destinations = [];
+
   #onFormSubmit = () => {};
   #onButtonRollupClick = () => {};
 
   constructor({point, offers, destinations, onFormSubmit, onButtonRollupClick}) {
     super();
-    this.#point = point;
     this.#offers = offers;
     this.#destinations = destinations;
     this.#onFormSubmit = onFormSubmit;
     this.#onButtonRollupClick = onButtonRollupClick;
+
+    this._setState(PointEditView.parsePointToState(point));
+    this._restoreHandlers();
 
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#buttonRollupClickHandler);
     this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler);
   }
 
   get template() {
-    return createEditPointTemplate(this.#point, this.#offers, this.#destinations);
+    // console.log(this._state.offers);
+    return createEditPointTemplate(this._state, this.#offers, this.#destinations);
   }
 
-  #formSubmitHandler = (evt) => {
-    evt.preventDefault();
-    this.#onFormSubmit();
+  reset(point) {
+    this.updateElement(PointEditView.parsePointToState(point));
+  }
+
+  #formSubmitHandler = (event) => {
+    event.preventDefault();
+    this.#onFormSubmit(PointEditView.parseStateToPoint(this._state));
   };
 
-  #buttonRollupClickHandler = (evt) => {
-    evt.preventDefault();
+  #buttonRollupClickHandler = (event) => {
+    event.preventDefault();
     this.#onButtonRollupClick();
   };
+
+  #typeChangeHandler = (event) => {
+    event.preventDefault();
+
+    this.updateElement({
+      type: event.target.value
+    });
+  };
+
+  #destinationChangeHandler = (event) => {
+    this.updateElement({
+      destination: this.#destinations.find((destination) => destination.name === event.target.value).id,
+    });
+  };
+
+  #offerChangeHandler = (event) => {
+    const offers = this._state.offers;
+    const offerId = event.target.name;
+
+    if (offers.has(offerId)) {
+      offers.delete(offerId);
+    } else {
+      offers.add(event.target.name);
+    }
+
+    this._setState({offers: offers});
+  };
+
+  #priceChangeHandler = (event) => {
+    event.preventDefault();
+
+    this._setState({
+      basePrice: event.target.value,
+    });
+  };
+
+  _restoreHandlers() {
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#buttonRollupClickHandler);
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#typeChangeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
+    this.element.querySelector('.event__available-offers')?.addEventListener('change',this.#offerChangeHandler);
+    this.element.querySelector('.event__field-group--price').addEventListener('input', this.#priceChangeHandler);
+  }
+
+  static parsePointToState (point) {
+    const state = {...point};
+
+    state.offers = new Set(state.offers);
+
+    return state;
+  }
+
+  static parseStateToPoint (state) {
+    const point = {...state};
+
+    point.offers = Array.from(point.offers);
+
+    return point;
+  }
 }

@@ -16,7 +16,7 @@ const DateFormat = {
   DAY_HOUR_MINUTES_WITH_POSTFIX: 'DD[D] HH[H] mm[M]'
 };
 
-const FiltersType = {
+const FilterType = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
   PRESENT: 'present',
@@ -30,9 +30,9 @@ const Messages = {
   FUTURE: 'There are no future events now'
 };
 
-const DEFAULT_FILTER = FiltersType.EVERYTHING;
+const DEFAULT_FILTER = FilterType.EVERYTHING;
 
-const SortTypes = {
+const SortType = {
   DAY: 'day',
   EVENT: 'event',
   TIME: 'time',
@@ -40,7 +40,7 @@ const SortTypes = {
   OFFERS: 'offers',
 };
 
-const DEFAULT_SORT = SortTypes.DAY;
+const DEFAULT_SORT = SortType.DAY;
 
 const POINTS_TYPE = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
@@ -57,9 +57,9 @@ export {
   MILLISECONDS_IN_HOUR,
   MILLISECONDS_IN_DAY,
   DateFormat,
-  FiltersType,
+  FilterType,
   DEFAULT_FILTER,
-  SortTypes,
+  SortType,
   DEFAULT_SORT,
   POINTS_TYPE,
   COUNT_DESTINATIONS_NAMES,
