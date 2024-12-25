@@ -60,6 +60,9 @@ function updateItem(items, update) {
   return items.map((item) => item.id === update.id ? update : item);
 }
 
+//сортировка по цене
+const sortByPrice = (a, b) => b.basePrice - a.basePrice;
+
 export {
   getRandomArrayElement,
   getRandomInteger,
@@ -71,5 +74,6 @@ export {
   shuffle,
   changeLengthRandom,
   isEscape,
-  updateItem
+  updateItem,
+  sortByPrice,
 };

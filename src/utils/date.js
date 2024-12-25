@@ -10,7 +10,7 @@ dayjs.extend(duration);
 dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
 
-//получить самую ранюю дату из точек маршрута
+//получить самую раннюю дату из точек маршрута
 const getMinDate = (items) => convertDate(dayjs.min(items.map((item) => dayjs(item.dateFrom))), DateFormat.DAY_MONTH);
 
 //получить самую позднюю дату из точек маршрута
@@ -45,6 +45,9 @@ function getDifferenceInTime(start, end) {
   return dayjs.duration(difference).format(DateFormat.DAY_HOUR_MINUTES_WITH_POSTFIX);
 }
 
+//сортировка по времени
+const sortByTime = (a, b) => dayjs(b.dateTo).diff(b.dateFrom) - dayjs(a.dateTo).diff(a.dateFrom);
+
 export {
   convertDate,
   getDifferenceInTime,
@@ -52,5 +55,6 @@ export {
   getMaxDate,
   isFuture,
   isPast,
-  isPresent
+  isPresent,
+  sortByTime,
 };

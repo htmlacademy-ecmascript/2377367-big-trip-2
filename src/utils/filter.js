@@ -8,7 +8,7 @@ const filter = {
   [FiltersType.PAST]: (points) => points.filter((point) => isPast(point.dateTo)),
 };
 
-//сформировать фильтр по точка маршрута
+//сформировать фильтр по точке маршрута
 function generateFilter(points) {
   return Object.entries(filter).map(
     ([filterType, filterPoints]) => ({
