@@ -6,15 +6,21 @@ const MILLISECONDS_IN_HOUR = MILLISECONDS_IN_MINUTE * 60;
 
 const MILLISECONDS_IN_DAY = MILLISECONDS_IN_HOUR * 24;
 
+const TIME_ZONE = '+03:00';
+
 const DateFormat = {
   DAY_MONTH: 'D MMM',
   MONTH_DAY: 'MMM DD',
-  HOUR_MINUTES: 'HH:mm',
+  TIME: 'HH:mm',
   DAY_MONTH_YEAR_TIME: 'DD/MM/YY[&nbsp;]HH:mm',
   MINUTES_WITH_POSTFIX: 'mm[M]',
-  HOUR_MINUTES_WITH_POSTFIX: 'HH[H] mm[M]',
-  DAY_HOUR_MINUTES_WITH_POSTFIX: 'DD[D] HH[H] mm[M]'
+  HOURS_MINUTES_WITH_POSTFIX: 'HH[H] mm[M]',
+  DAY_HOURS_MINUTES_WITH_POSTFIX: 'DD[D] HH[H] mm[M]',
+  DATE_PICKER: 'd/m/y H:i',
+  DATE_TIME: 'YYYY-MM-DDTHH:mm',
 };
+
+const PHOTOS_SRC = 'https://loremflickr.com/248/152?random=';
 
 const FilterType = {
   EVERYTHING: 'everything',
@@ -27,7 +33,7 @@ const Messages = {
   EVERYTHING: 'Click New Event to create your first point',
   PAST: 'There are no past events now',
   PRESENT: 'There are no present events now',
-  FUTURE: 'There are no future events now'
+  FUTURE: 'There are no future events now',
 };
 
 const DEFAULT_FILTER = FilterType.EVERYTHING;
@@ -48,7 +54,7 @@ const COUNT_DESTINATIONS_NAMES = 3;
 
 const Mode = {
   DEFAULT: 'default',
-  EDITING: 'editing'
+  EDITING: 'editing',
 };
 
 export {
@@ -56,7 +62,9 @@ export {
   MILLISECONDS_IN_MINUTE,
   MILLISECONDS_IN_HOUR,
   MILLISECONDS_IN_DAY,
+  TIME_ZONE,
   DateFormat,
+  PHOTOS_SRC,
   FilterType,
   DEFAULT_FILTER,
   SortType,
@@ -64,5 +72,5 @@ export {
   POINTS_TYPE,
   COUNT_DESTINATIONS_NAMES,
   Messages,
-  Mode
+  Mode,
 };

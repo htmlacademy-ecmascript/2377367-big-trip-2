@@ -16,9 +16,9 @@ function createOfferTemplate({title, price}) {
 
 //создать точку маршрута
 function createPointTemplate(point, offers, destinations) {
-  const { type, dateFrom, dateTo, isFavorite, basePrice, offers: pointOffers, destination: pointDestination } = point;
+  const {type, dateFrom, dateTo, isFavorite, basePrice, offers: pointOffers, destination: pointDestination} = point;
   const filteredDestinationById = getElementById(destinations, pointDestination);
-  const { name } = filteredDestinationById;
+  const {name} = filteredDestinationById;
   const filteredOffersById = getElementById(getElementByType(offers, type).offers, pointOffers);
 
   return (
@@ -31,9 +31,9 @@ function createPointTemplate(point, offers, destinations) {
         <h3 class="event__title">${type} ${name}</h3>
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime=${dateFrom}>${convertDate(dateFrom, DateFormat.HOUR_MINUTES)}</time>
+            <time class="event__start-time" datetime=${convertDate(dateFrom, DateFormat.DATE_TIME)}>${convertDate(dateFrom, DateFormat.TIME)}</time>
             &mdash;
-            <time class="event__end-time" datetime=${dateTo}>${convertDate(dateTo, DateFormat.HOUR_MINUTES)}</time>
+            <time class="event__end-time" datetime=${convertDate(dateFrom, DateFormat.DATE_TIME)}>${convertDate(dateTo, DateFormat.TIME)}</time>
           </p>
           <p class="event__duration">${getDifferenceInTime(dateFrom, dateTo)}</p>
         </div>
