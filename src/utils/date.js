@@ -39,10 +39,10 @@ function getDifferenceInTime(start, end) {
   }
 
   if (difference < MILLISECONDS_IN_DAY) {
-    return dayjs.duration(difference).format(DateFormat.HOUR_MINUTES_WITH_POSTFIX);
+    return dayjs.duration(difference).format(DateFormat.HOURS_MINUTES_WITH_POSTFIX);
   }
 
-  return dayjs.duration(difference).format(DateFormat.DAY_HOUR_MINUTES_WITH_POSTFIX);
+  return dayjs.duration(difference).format(DateFormat.DAY_HOURS_MINUTES_WITH_POSTFIX);
 }
 
 //сортировка по времени

@@ -1,3 +1,5 @@
+import {PHOTOS_SRC} from '../const.js';
+
 //список пунктов назначения
 const mockDestinations = [
   {
@@ -6,11 +8,11 @@ const mockDestinations = [
     name: 'Amsterdam',
     pictures: [
       {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/1.jpg',
+        src: `${PHOTOS_SRC}1`,
         description: 'Amsterdam beautiful place'
       },
       {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/10.jpg',
+        src: `${PHOTOS_SRC}2`,
         description: 'Amsterdam old city'
       }
     ]
@@ -21,15 +23,15 @@ const mockDestinations = [
     name: 'Chamonix',
     pictures: [
       {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/6.jpg',
+        src: `${PHOTOS_SRC}3`,
         description: 'Chamonix parliament building'
       },
       {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/5.jpg',
+        src: `${PHOTOS_SRC}4`,
         description: 'Chamonix old city'
       },
       {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/13.jpg',
+        src: `${PHOTOS_SRC}5`,
         description: 'Chamonix beautiful place'
       }
     ]
