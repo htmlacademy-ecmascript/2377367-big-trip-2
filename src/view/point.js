@@ -1,6 +1,7 @@
-import {DateFormat} from '../const.js';
+
+import {DateFormat, UserAction, UpdateType} from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
-import {getElementById, getElementByType} from '../utils/common.js';
+import {getElementById} from '../utils/common.js';
 import {getDifferenceInTime, convertDate} from '../utils/date.js';
 
 //создать элемент списка для дополнительного предложения
@@ -14,12 +15,12 @@ function createOfferTemplate({title, price}) {
   );
 }
 
-//создать точку маршрута
-function createPointTemplate(point, offers, destinations) {
-  const {type, dateFrom, dateTo, isFavorite, basePrice, offers: pointOffers, destination: pointDestination} = point;
-  const filteredDestinationById = getElementById(destinations, pointDestination);
-  const {name} = filteredDestinationById;
-  const filteredOffersById = getElementById(getElementByType(offers, type).offers, pointOffers);
+//создать блок точки маршрута
+function createPointTemplate(content) {
+  const {point, offers, destination} = content;
+  const {type, dateFrom, dateTo, isFavorite, basePrice} = point;
+  const {name} = destination;
+  const filteredOffersById = getElementById(offers, point.offers);
 
   return (
     `<li class="trip-events__item">
@@ -60,35 +61,33 @@ function createPointTemplate(point, offers, destinations) {
 
 //класс для визуального представления с точки маршрута
 export default class PointView extends AbstractView {
-  #point = null;
-  #offers = [];
-  #destinations = [];
-  #onEditClick = () => {};
+  #content = null;
+
+  #onArrowButtonClick = () => {};
   #onFavoriteClick = () => {};
 
-  constructor({point, offers, destinations, onEditClick, onFavoriteClick}) {
+  constructor({content, onArrowButtonClick, onFavoriteClick}) {
     super();
-    this.#point = point;
-    this.#offers = offers;
-    this.#destinations = destinations;
-    this.#onEditClick = onEditClick;
+    this.#content = content;
+    this.#onArrowButtonClick = onArrowButtonClick;
     this.#onFavoriteClick = onFavoriteClick;
-
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#arrowButtonClickHandler);
     this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
   }
 
   get template() {
-    return createPointTemplate(this.#point, this.#offers, this.#destinations);
+    return createPointTemplate(this.#content);
   }
 
-  #editClickHandler = (event) => {
+  //событие клик по кнопке открыть/закрыть форму редактирования точки маршрута
+  #arrowButtonClickHandler = (event) => {
     event.preventDefault();
-    this.#onEditClick();
+    this.#onArrowButtonClick();
   };
 
+  //событие клик по кнопке избранное
   #favoriteClickHandler = (event) => {
     event.preventDefault();
-    this.#onFavoriteClick();
+    this.#onFavoriteClick(UserAction.UPDATE_EVENT, UpdateType.PATCH);
   };
 }

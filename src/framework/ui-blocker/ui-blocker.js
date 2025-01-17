@@ -74,7 +74,7 @@ export default class UiBlocker {
     document.removeEventListener('keydown', this.#documentKeydownHandler);
   };
 
-  #documentKeydownHandler = (evt) => {
-    evt.preventDefault();
+  #documentKeydownHandler = (event) => {
+    event.preventDefault();
   };
 }

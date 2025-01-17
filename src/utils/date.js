@@ -1,29 +1,19 @@
+
 import dayjs from 'dayjs';
 import minMax from 'dayjs/plugin/minMax';
 import duration from 'dayjs/plugin/duration';
-import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
-import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-import {DateFormat, MILLISECONDS_IN_HOUR, MILLISECONDS_IN_DAY} from '../const.js';
+import {DateFormat, MILLISECONDS_IN_HOUR, MILLISECONDS_IN_DAY, FilterType} from '../const.js';
+import isBetween from 'dayjs/plugin/isBetween';
 
 dayjs.extend(minMax);
 dayjs.extend(duration);
-dayjs.extend(isSameOrBefore);
-dayjs.extend(isSameOrAfter);
+dayjs.extend(isBetween);
 
 //получить самую раннюю дату из точек маршрута
 const getMinDate = (items) => convertDate(dayjs.min(items.map((item) => dayjs(item.dateFrom))), DateFormat.DAY_MONTH);
 
 //получить самую позднюю дату из точек маршрута
 const getMaxDate = (items) => convertDate(dayjs.max(items.map((item) => dayjs(item.dateTo))), DateFormat.DAY_MONTH);
-
-//проверка является ли указанная дата будущей по отношению к текущему времени
-const isFuture = (date) => date && dayjs().isBefore(date);
-
-//проверка является ли указанная дата прошедшей по отношению к текущему времени
-const isPast = (date) => date && dayjs().isAfter(date);
-
-//проверка находится ли текущее время внутри заданного диапазона
-const isPresent = (dateFrom, dateTo) => dayjs().isSameOrAfter(dateFrom) && dayjs().isSameOrBefore(dateTo);
 
 //преобразование даты
 function convertDate(date, format) {
@@ -45,16 +35,36 @@ function getDifferenceInTime(start, end) {
   return dayjs.duration(difference).format(DateFormat.DAY_HOURS_MINUTES_WITH_POSTFIX);
 }
 
-//сортировка по времени
-const sortByTime = (a, b) => dayjs(b.dateTo).diff(b.dateFrom) - dayjs(a.dateTo).diff(a.dateFrom);
+//сортировка по дате
+const sortByDate = (firstPoint, secondPoint) => dayjs(firstPoint.dateFrom) - dayjs(secondPoint.dateFrom);
+
+//сравнение двух точек по продолжительности
+function compareDurations(firstPoint, secondPoint) {
+  const firstPointDuration = dayjs.duration(dayjs(firstPoint.dateTo).diff(dayjs(firstPoint.dateFrom))).asMilliseconds();
+  const secondPointDuration = dayjs.duration(dayjs(secondPoint.dateTo).diff(dayjs(secondPoint.dateFrom))).asMilliseconds();
+  return secondPointDuration - firstPointDuration;
+}
+
+//фильтр точек маршрута
+function filterPoints(name, points) {
+  switch (name) {
+    case FilterType.EVERYTHING:
+      return points;
+    case FilterType.FUTURE:
+      return points.filter((item) => dayjs().isBefore(dayjs(item.dateFrom)));
+    case FilterType.PRESENT:
+      return points.filter((item) => dayjs().isBetween(dayjs(item.dateTo), dayjs(item.dateFrom)));
+    case FilterType.PAST:
+      return points.filter((item) => dayjs().isAfter(dayjs(item.dateTo)));
+  }
+}
 
 export {
   convertDate,
   getDifferenceInTime,
   getMinDate,
   getMaxDate,
-  isFuture,
-  isPast,
-  isPresent,
-  sortByTime,
+  sortByDate,
+  compareDurations,
+  filterPoints,
 };
