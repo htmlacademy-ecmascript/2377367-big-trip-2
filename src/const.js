@@ -12,7 +12,7 @@ const DateFormat = {
   DAY_MONTH: 'D MMM',
   MONTH_DAY: 'MMM DD',
   TIME: 'HH:mm',
-  DAY_MONTH_YEAR_TIME: 'DD/MM/YY[&nbsp;]HH:mm',
+  DAY_MONTH_YEAR_TIME: 'DD/MM/YY HH:mm',
   MINUTES_WITH_POSTFIX: 'mm[M]',
   HOURS_MINUTES_WITH_POSTFIX: 'HH[H] mm[M]',
   DAY_HOURS_MINUTES_WITH_POSTFIX: 'DD[D] HH[H] mm[M]',
@@ -23,10 +23,10 @@ const DateFormat = {
 const PHOTOS_SRC = 'https://loremflickr.com/248/152?random=';
 
 const FilterType = {
-  EVERYTHING: 'everything',
-  FUTURE: 'future',
-  PRESENT: 'present',
-  PAST: 'past',
+  EVERYTHING: 'EVERYTHING',
+  FUTURE: 'FUTURE',
+  PRESENT: 'PRESENT',
+  PAST: 'PAST',
 };
 
 const Messages = {
@@ -39,22 +39,53 @@ const Messages = {
 const DEFAULT_FILTER = FilterType.EVERYTHING;
 
 const SortType = {
-  DAY: 'day',
-  EVENT: 'event',
-  TIME: 'time',
-  PRICE: 'price',
-  OFFERS: 'offers',
+  DAY: {name: 'day', isDisabled: false},
+  EVENT: {name: 'event', isDisabled: true},
+  TIME: {name: 'time', isDisabled: false},
+  PRICE: {name: 'price', isDisabled: false},
+  OFFER: {name: 'offer', isDisabled: true}
 };
 
-const DEFAULT_SORT = SortType.DAY;
+const DEFAULT_SORT = SortType.DAY.name;
 
-const POINTS_TYPE = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+const POINTS_TYPE = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
 const COUNT_DESTINATIONS_NAMES = 3;
 
-const Mode = {
-  DEFAULT: 'default',
-  EDITING: 'editing',
+const ModeType = {
+  DEFAULT: 'DEFAULT',
+  EDIT: 'EDIT',
+  NEW: 'NEW',
+};
+
+const UserAction = {
+  UPDATE_EVENT: 'UPDATE_EVENT',
+  ADD_EVENT: 'ADD_EVENT',
+  DELETE_EVENT: 'DELETE_EVENT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+  INIT: 'INIT',
+};
+
+const BLANK_POINT = {
+  'id': 0,
+  'type': POINTS_TYPE[5].toLowerCase(),
+  'destination': '',
+  'dateFrom': '',
+  'dateTo': '',
+  'basePrice': 0,
+  'offers': [],
+  'isFavorite': false,
+};
+
+const CONFIG_DATE_PICKER = {
+  enableTime: true,
+  'time_24hr': true,
+  dateFormat: DateFormat.DATE_PICKER,
 };
 
 export {
@@ -72,5 +103,9 @@ export {
   POINTS_TYPE,
   COUNT_DESTINATIONS_NAMES,
   Messages,
-  Mode,
+  ModeType,
+  UserAction,
+  UpdateType,
+  BLANK_POINT,
+  CONFIG_DATE_PICKER,
 };

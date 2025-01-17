@@ -1,12 +1,6 @@
-//получить случайный элемент массива
-function getRandomArrayElement(items) {
-  return items[Math.floor(Math.random() * items.length)];
-}
 
-//получить случайное целочисленное число
-function getRandomInteger(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
+import {SortType} from '../const.js';
+import {compareDurations, sortByDate} from './date.js';
 
 //получить названия пунктов назначения
 const getDestinationNames = (destinations, points = []) => {
@@ -15,9 +9,6 @@ const getDestinationNames = (destinations, points = []) => {
   }
   return [...new Set(destinations.map((destination) => destination.name))];
 };
-
-//преобразовать строку, чтобы начиналась с заглавной буквы
-const capitalize = (item) => item.charAt(0).toUpperCase() + item.substring(1);
 
 const isEscape = (event) => event.key === 'Escape';
 
@@ -40,40 +31,32 @@ function getElementById(elements, itemsId) {
   return elements.find((element) => element.id === itemsId);
 }
 
-//перемешать массив
-function shuffle(items) {
-  for (let i = items.length - 1; i > 0; i--) {
-    const randomIndex = Math.floor(Math.random() * (i + 1));
-    [items[i], items[randomIndex]] = [items[randomIndex], items[i]];
-  }
-  return items;
-}
-
-//изменить рандомно размер массива
-function changeLengthRandom(items) {
-  const max = getRandomInteger(0, items.length - 1);
-  return items.slice(0, max);
-}
-
 //обновление элементов в массиве объектов
 function updateItem(items, update) {
   return items.map((item) => item.id === update.id ? update : item);
 }
 
-//сортировка по цене
-const sortByPrice = (a, b) => b.basePrice - a.basePrice;
+//сортировка точек маршрута
+function sortPoints(name, points) {
+  switch (name) {
+    case SortType.DAY.name:
+      points.sort((firstPoint, secondPoint) => sortByDate(firstPoint, secondPoint));
+      break;
+    case SortType.PRICE.name:
+      points.sort((firstPoint, secondPoint) => secondPoint.basePrice - firstPoint.basePrice);
+      break;
+    case SortType.TIME.name:
+      points.sort((firstPoint, secondPoint) => compareDurations(firstPoint, secondPoint));
+      break;
+  }
+}
 
 export {
-  getRandomArrayElement,
-  getRandomInteger,
   getDestinationNames,
-  capitalize,
   getFullPrice,
   getElementByType,
   getElementById,
-  shuffle,
-  changeLengthRandom,
   isEscape,
   updateItem,
-  sortByPrice,
+  sortPoints,
 };

@@ -1,7 +1,6 @@
-
 import AbstractView from '../framework/view/abstract-view.js';
 
-//создать элемент системного сообщения
+//создать блок системного сообщения
 function createSystemMessageTemplate(text) {
   return `<p class="trip-events__msg">${text}</p>`;
 }

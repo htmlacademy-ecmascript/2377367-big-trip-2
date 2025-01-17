@@ -1,17 +1,14 @@
-
-import {DEFAULT_FILTER} from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 //создать элемент списка фильтров
-function createFilterItemTemplate(filter) {
-  const {type, count} = filter;
-  const isChecked = DEFAULT_FILTER === type ? 'checked' : '';
-  const isDisabled = count === 0 ? 'disabled' : '';
+function createFilterItemTemplate({name, count, isChecked}) {
+  isChecked = (isChecked === true) ? 'checked' : '';
+  const isDisabled = (count === 0) ? 'disabled' : '';
 
   return (
     `<div class="trip-filters__filter">
-      <input id="filter-${type}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${type}" ${isChecked} ${isDisabled}>
-      <label class="trip-filters__filter-label" for="filter-${type}">${type}</label>
+      <input id="filter-${name}" class="trip-filters__filter-input visually-hidden" type="radio" name="trip-filter" value="${name}" ${isChecked} ${isDisabled}>
+      <label class="trip-filters__filter-label" for="filter-${name}">${name}</label>
     </div>`
   );
 }
@@ -30,14 +27,26 @@ function createFiltersTemplate(filters) {
 
 //класс для визуального представления фильтра точек маршрута
 export default class FilterListView extends AbstractView {
-  #filters = [];
+  #filters = null;
+  #onFilterChange = () => {};
 
-  constructor({filters}) {
+  constructor({filters, onFilterChange}) {
     super();
     this.#filters = filters;
+    this.#onFilterChange = onFilterChange;
+    this.element.addEventListener('change', this.#filterChangeHandler);
   }
 
   get template() {
     return createFiltersTemplate(this.#filters);
   }
+
+  //событие изменение фильтра
+  #filterChangeHandler = (event) => {
+    event.preventDefault();
+
+    if (event.target.tagName === 'INPUT') {
+      this.#onFilterChange(event.target.value);
+    }
+  };
 }
