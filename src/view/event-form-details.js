@@ -1,17 +1,18 @@
-
 import {BLANK_POINT} from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
 //создать элемент списка дополнительных предложений
 function createOffersItemTemplate(selectedOffers, offer) {
-  const isChecked = (selectedOffers.some((id) => id === offer.id)) ? 'checked' : '';
+  const {id, title, price} = offer;
+  const isChecked = (selectedOffers.some((offerId) => offerId === id)) ? 'checked' : '';
+
   return (
     `<div class="event__offer-selector">
-    <input class="event__offer-checkbox visually-hidden" value="${offer.id}" id="event-offer-${offer.id}" type="checkbox" name="event-offer-luggage" ${isChecked}>
-    <label class="event__offer-label" for="event-offer-${offer.id}">
-      <span class="event__offer-title">${offer.title}</span>
+    <input class="event__offer-checkbox visually-hidden" value="${id}" id="event-offer-${id}" type="checkbox" name="event-offer-luggage" ${isChecked}>
+    <label class="event__offer-label" for="event-offer-${id}">
+      <span class="event__offer-title">${title}</span>
       &plus;&euro;&nbsp;
-      <span class="event__offer-price">${offer.price}</span>
+      <span class="event__offer-price">${price}</span>
     </label>
   </div>`
   );
@@ -34,9 +35,18 @@ function createOffersListTemplate(selectedOffers, offers) {
 }
 
 //создать изображение пункт назначения
-function createPicture(picture) {
-  const {src, description} = picture;
-  return `<img class="event__photo" src="${src}" alt="${description}">`;
+function createPicture(pictures) {
+  if (pictures.length === 0) {
+    return '';
+  }
+
+  return (
+    `<div class="event__photos-container">
+      <div class="event__photos-tape">
+        ${pictures.map(({src, description}) => `<img class="event__photo" src="${src}" alt="${description}">`).join('')}
+      </div>
+    </div>`
+  );
 }
 
 //создать блок пункта назначения
@@ -45,16 +55,11 @@ function createDestination(destination) {
     return '';
   }
 
-  const {description, pictures} = destination;
   return (
     `<section class="event__section event__section--destination">
       <h3 class="event__section-title event__section-title--destination">Destination</h3>
-      <p class="event__destination-description">${description}</p>
-      <div class="event__photos-container">
-        <div class="event__photos-tape">
-          ${pictures.map((picture) => createPicture(picture)).join('')}
-        </div>
-      </div>
+      <p class="event__destination-description">${destination.description}</p>
+      ${createPicture(destination.pictures)}
     </section>`
   );
 }

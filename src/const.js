@@ -1,12 +1,8 @@
-const POINTS_COUNT = 8;
-
 const MILLISECONDS_IN_MINUTE = 60000;
 
 const MILLISECONDS_IN_HOUR = MILLISECONDS_IN_MINUTE * 60;
 
 const MILLISECONDS_IN_DAY = MILLISECONDS_IN_HOUR * 24;
-
-const TIME_ZONE = '+03:00';
 
 const DateFormat = {
   DAY_MONTH: 'D MMM',
@@ -20,8 +16,6 @@ const DateFormat = {
   DATE_TIME: 'YYYY-MM-DDTHH:mm',
 };
 
-const PHOTOS_SRC = 'https://loremflickr.com/248/152?random=';
-
 const FilterType = {
   EVERYTHING: 'EVERYTHING',
   FUTURE: 'FUTURE',
@@ -29,11 +23,16 @@ const FilterType = {
   PAST: 'PAST',
 };
 
-const Messages = {
+const EmptyListMessage = {
   EVERYTHING: 'Click New Event to create your first point',
   PAST: 'There are no past events now',
   PRESENT: 'There are no present events now',
   FUTURE: 'There are no future events now',
+};
+
+const InfoMessages = {
+  LOADING: 'Loading...',
+  ERROR: 'Failed to load latest route information',
 };
 
 const DEFAULT_FILTER = FilterType.EVERYTHING;
@@ -49,8 +48,6 @@ const SortType = {
 const DEFAULT_SORT = SortType.DAY.name;
 
 const POINTS_TYPE = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
-
-const COUNT_DESTINATIONS_NAMES = 3;
 
 const ModeType = {
   DEFAULT: 'DEFAULT',
@@ -69,15 +66,15 @@ const UpdateType = {
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
   INIT: 'INIT',
+  ERROR: 'ERROR',
 };
 
 const BLANK_POINT = {
-  'id': 0,
   'type': POINTS_TYPE[5].toLowerCase(),
   'destination': '',
   'dateFrom': '',
   'dateTo': '',
-  'basePrice': 0,
+  'basePrice': '0',
   'offers': [],
   'isFavorite': false,
 };
@@ -88,24 +85,40 @@ const CONFIG_DATE_PICKER = {
   dateFormat: DateFormat.DATE_PICKER,
 };
 
+const ApiMethod = {
+  GET: 'GET',
+  PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE'
+};
+
+const BlockerTimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
+
+const BASE_URL = 'https://22.objects.htmlacademy.pro/big-trip';
+const AUTHORIZATION_STRING = 'Basic 212121bigtrip22';
+
 export {
-  POINTS_COUNT,
   MILLISECONDS_IN_MINUTE,
   MILLISECONDS_IN_HOUR,
   MILLISECONDS_IN_DAY,
-  TIME_ZONE,
   DateFormat,
-  PHOTOS_SRC,
   FilterType,
   DEFAULT_FILTER,
   SortType,
   DEFAULT_SORT,
   POINTS_TYPE,
-  COUNT_DESTINATIONS_NAMES,
-  Messages,
+  EmptyListMessage,
+  InfoMessages,
   ModeType,
   UserAction,
   UpdateType,
   BLANK_POINT,
   CONFIG_DATE_PICKER,
+  ApiMethod,
+  BlockerTimeLimit,
+  BASE_URL,
+  AUTHORIZATION_STRING,
 };
