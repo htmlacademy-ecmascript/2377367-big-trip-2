@@ -1,20 +1,17 @@
-import {render, remove, RenderPosition, replace} from '../framework/render.js';
-import {Messages, UpdateType, UserAction, DEFAULT_SORT, DEFAULT_FILTER, ModeType} from '../const.js';
+import {render, remove, replace} from '../framework/render.js';
+import {EmptyListMessage, InfoMessages, UpdateType, UserAction, DEFAULT_SORT, DEFAULT_FILTER, ModeType, BlockerTimeLimit} from '../const.js';
 import SortListView from '../view/sort.js';
 import PointListView from '../view/point-list.js';
 import MessageView from '../view/message.js';
 import PointPresenter from './point-presenter.js';
 import {sortPoints} from '../utils/common.js';
 import {filterPoints} from '../utils/date.js';
-import TripCost from '../view/trip-cost.js';
-import TripTitle from '../view/trip-title.js';
-import TripInfo from '../view/trip-information.js';
 import NewEventButton from '../view/new-event-button.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
 //класс для взаимодействия данных и интерфейса списка точек маршрута
 export default class TripPresenter {
-  #listComponent = new PointListView();
-  #tripInfoComponent = null;
+  #listComponent = null;
   #mainElement = document.querySelector('.trip-main');
   #listContainer = null;
   #tripModel = null;
@@ -24,32 +21,41 @@ export default class TripPresenter {
   #sortViewComponent = null;
   #infoMessageComponent = null;
   #newEventButtonComponent = null;
+  #isLoading = true;
+  #loadingComponent = null;
+  #errorMessageComponent = null;
+  #uiBlocker = null;
+  #newPointPresenter = null;
 
   constructor({container, tripModel, filterModel}) {
     this.#listContainer = container;
     this.#tripModel = tripModel;
     this.#filterModel = filterModel;
 
-    this.#tripModel.addObserver(this.#handleModelChange);
-    this.#filterModel.addObserver(this.#handleModelChange);
+    this.#tripModel.addObserver(this.#modelChangeHandler);
+    this.#filterModel.addObserver(this.#modelChangeHandler);
+
+    this.#uiBlocker = new UiBlocker({
+      lowerLimit: BlockerTimeLimit.LOWER_LIMIT,
+      upperLimit: BlockerTimeLimit.UPPER_LIMIT
+    });
   }
 
   init() {
-    this.#renderPageHeader();
-    this.#renderPageMain();
-
-  }
-
-  //отобразить шапки страницы
-  #renderPageHeader() {
-    this.#renderTripInfo();
     this.#renderNewEventButton();
+    if (this.#isLoading) {
+      remove(this.#errorMessageComponent);
+      this.#loadingComponent = new MessageView({text: InfoMessages.LOADING});
+      render(this.#loadingComponent, this.#listContainer);
+      return;
+    }
+
+    this.#renderPageMain();
   }
 
   //отобразить основную область страницы
   #renderPageMain() {
     const filteredPoints = filterPoints(this.#filterModel.filter, this.#tripModel.tripPoints);
-
     if (filteredPoints.length === 0) {
       remove(this.#sortViewComponent);
       this.#sortViewComponent = null;
@@ -57,34 +63,23 @@ export default class TripPresenter {
       return;
     }
 
-    remove(this.#infoMessageComponent);
-    this.#renderSort();
-    this.#renderTripPoints(filteredPoints);
-    render(this.#listComponent, this.#listContainer);
+    this.#renderPointsList(filteredPoints);
   }
 
-  //отобразить информацию о путешествии
-  #renderTripInfo() {
-    const previousTripInfoComponent = this.#tripInfoComponent;
-    this.#tripInfoComponent = new TripInfo();
+  #renderPointsList(filteredPoints) {
+    this.#renderSort();
 
-    if (previousTripInfoComponent === null) {
-      render(this.#tripInfoComponent, this.#mainElement, RenderPosition.AFTERBEGIN);
-    } else {
-      replace(this.#tripInfoComponent, previousTripInfoComponent);
-      remove(previousTripInfoComponent);
+    if (!this.#listComponent) {
+      this.#listComponent = new PointListView();
     }
 
-    render(new TripTitle({
-      points: this.#tripModel.tripPoints,
-      destinations: this.#tripModel.destinations
-    }), this.#tripInfoComponent.element);
+    render(this.#listComponent, this.#listContainer);
+    remove(this.#infoMessageComponent);
+    this.#infoMessageComponent = null;
 
-    render(new TripCost({
-      points: this.#tripModel.tripPoints,
-      offers: this.#tripModel.offers
-    }), this.#tripInfoComponent.element);
-
+    if (filteredPoints) {
+      this.#renderTripPoints(filteredPoints);
+    }
   }
 
   //отобразить кнопку добавить новую точку маршрута
@@ -97,8 +92,10 @@ export default class TripPresenter {
 
   //отобразить компонент без точек маршрута
   #renderEmptyPointsList() {
-    this.#infoMessageComponent = new MessageView({text: Messages[this.#filterModel.filter.toUpperCase()]});
-    render(this.#infoMessageComponent, this.#listContainer);
+    if (!this.#infoMessageComponent) {
+      this.#infoMessageComponent = new MessageView({text: EmptyListMessage[this.#filterModel.filter.toUpperCase()]});
+      render(this.#infoMessageComponent, this.#listContainer);
+    }
   }
 
   //отобразить точки маршрута
@@ -126,22 +123,44 @@ export default class TripPresenter {
   }
 
   //событие добавление/изменение/удаление точки маршрута
-  #onDataChange = (actionType, updateType, newPoint) => {
+  #onDataChange = async (actionType, updateType, newPoint) => {
+    this.#uiBlocker.block();
+    const currentPointPresenter = this.#pointPresenters.get(newPoint.id);
+
     switch (actionType) {
       case UserAction.ADD_EVENT:
-        this.#tripModel.addPoint(updateType, newPoint);
+        this.#newPointPresenter.setSavingMode();
+        try {
+          await this.#tripModel.addPoint(updateType, newPoint);
+          this.#newPointPresenter.destroy();
+          this.#newEventButtonComponent.updateElement({isDisabled: false});
+        } catch (error) {
+          this.#newPointPresenter.setAborting();
+        }
         break;
       case UserAction.UPDATE_EVENT:
-        this.#tripModel.updatePoint(updateType, newPoint);
+        currentPointPresenter.setSavingMode();
+        try {
+          await this.#tripModel.updatePoint(updateType, newPoint);
+        } catch (error) {
+          currentPointPresenter.setAborting();
+        }
         break;
       case UserAction.DELETE_EVENT:
-        this.#tripModel.deletePoint(updateType, newPoint);
+        currentPointPresenter.setDeletingMode();
+        try {
+          await this.#tripModel.deletePoint(updateType, newPoint);
+        } catch (error) {
+          currentPointPresenter.setAborting();
+        }
         break;
     }
+
+    this.#uiBlocker.unblock();
   };
 
   //обновить представления списка точек маршрута в случае изменения модели данных
-  #handleModelChange = (updateType, id) => {
+  #modelChangeHandler = (updateType, id) => {
     switch (updateType) {
       case UpdateType.PATCH:
         this.#pointPresenters.get(id).init(this.#tripModel.getContentById(id));
@@ -155,9 +174,25 @@ export default class TripPresenter {
         this.#currentSort = DEFAULT_SORT;
         this.init();
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.init();
+        break;
+      case UpdateType.ERROR:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        remove(this.#sortViewComponent);
+        this.#clearTripPoints();
+        this.#renderErrorMessage();
+        break;
     }
-
   };
+
+  #renderErrorMessage() {
+    this.#errorMessageComponent = new MessageView({text: InfoMessages.ERROR});
+    render(this.#errorMessageComponent, this.#listContainer);
+  }
 
   //создать блок сортировки
   #renderSort = () => {
@@ -179,9 +214,14 @@ export default class TripPresenter {
 
   //событие изменения режима точки маршрута
   #onModeChange = (id) => {
-    this.#pointPresenters.forEach((tripPoint, index) => {
+    if (this.#newPointPresenter) {
+      this.#newPointPresenter.destroy();
+      this.#newEventButtonComponent.updateElement({isDisabled: false});
+    }
+
+    this.#pointPresenters.forEach((pointPresenter, index) => {
       if (index !== id) {
-        tripPoint.resetView();
+        pointPresenter.resetView();
       }
     });
   };
@@ -197,18 +237,38 @@ export default class TripPresenter {
 
   //событие клик по кнопке создать новую точку маршрута
   #onNewEventButtonClick = () => {
-    const pointPresenter = new PointPresenter({
+    this.#newEventButtonComponent.updateElement({isDisabled: true});
+
+    if (this.#newPointPresenter) {
+      this.#newPointPresenter.destroy();
+    }
+
+    this.#currentSort = DEFAULT_SORT;
+    this.#filterModel.setFilter(UpdateType.MINOR, DEFAULT_FILTER);
+
+    if (!this.#listComponent) {
+      this.#renderPointsList();
+    }
+
+    this.#newPointPresenter = new PointPresenter({
       container: this.#listComponent.element,
       destinations: this.#tripModel.destinations,
       offers: this.#tripModel.offers,
       onDataChange: this.#onDataChange,
       onModeChange: this.#onModeChange,
-      mode: ModeType.NEW,
+      onCancelButtonClick: this.#onCancelButtonClick,
+      mode: ModeType.NEW
     });
 
-    this.#currentSort = DEFAULT_SORT;
-    this.#filterModel.setFilter(UpdateType.MINOR, DEFAULT_FILTER);
+    this.#newPointPresenter.init();
+  };
 
-    pointPresenter.init();
+  #onCancelButtonClick = () => {
+    this.#newEventButtonComponent.updateElement({isDisabled: false});
+    const filteredPoints = filterPoints(this.#filterModel.filter, this.#tripModel.tripPoints);
+
+    if (filteredPoints.length === 0) {
+      this.#renderPageMain();
+    }
   };
 }

@@ -1,19 +1,10 @@
-
 import dayjs from 'dayjs';
-import minMax from 'dayjs/plugin/minMax';
 import duration from 'dayjs/plugin/duration';
-import {DateFormat, MILLISECONDS_IN_HOUR, MILLISECONDS_IN_DAY, FilterType} from '../const.js';
+import {DateFormat, MILLISECONDS_IN_HOUR, MILLISECONDS_IN_DAY, FilterType, MILLISECONDS_IN_MINUTE} from '../const.js';
 import isBetween from 'dayjs/plugin/isBetween';
 
-dayjs.extend(minMax);
 dayjs.extend(duration);
 dayjs.extend(isBetween);
-
-//получить самую раннюю дату из точек маршрута
-const getMinDate = (items) => convertDate(dayjs.min(items.map((item) => dayjs(item.dateFrom))), DateFormat.DAY_MONTH);
-
-//получить самую позднюю дату из точек маршрута
-const getMaxDate = (items) => convertDate(dayjs.max(items.map((item) => dayjs(item.dateTo))), DateFormat.DAY_MONTH);
 
 //преобразование даты
 function convertDate(date, format) {
@@ -32,7 +23,11 @@ function getDifferenceInTime(start, end) {
     return dayjs.duration(difference).format(DateFormat.HOURS_MINUTES_WITH_POSTFIX);
   }
 
-  return dayjs.duration(difference).format(DateFormat.DAY_HOURS_MINUTES_WITH_POSTFIX);
+  const days = String(Math.floor(difference / MILLISECONDS_IN_DAY)).padStart(2, '0');
+  const hours = String(Math.floor((difference % (24 * 60 * 60 * 1000)) / MILLISECONDS_IN_HOUR)).padStart(2, '0');
+  const minutes = String(Math.floor((difference % (60 * 60 * 1000)) / MILLISECONDS_IN_MINUTE)).padStart(2, '0');
+
+  return `${days}D ${hours}H ${minutes}M`;
 }
 
 //сортировка по дате
@@ -42,6 +37,7 @@ const sortByDate = (firstPoint, secondPoint) => dayjs(firstPoint.dateFrom) - day
 function compareDurations(firstPoint, secondPoint) {
   const firstPointDuration = dayjs.duration(dayjs(firstPoint.dateTo).diff(dayjs(firstPoint.dateFrom))).asMilliseconds();
   const secondPointDuration = dayjs.duration(dayjs(secondPoint.dateTo).diff(dayjs(secondPoint.dateFrom))).asMilliseconds();
+
   return secondPointDuration - firstPointDuration;
 }
 
@@ -62,8 +58,6 @@ function filterPoints(name, points) {
 export {
   convertDate,
   getDifferenceInTime,
-  getMinDate,
-  getMaxDate,
   sortByDate,
   compareDurations,
   filterPoints,
