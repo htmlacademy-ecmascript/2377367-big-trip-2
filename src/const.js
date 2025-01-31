@@ -4,6 +4,8 @@ const MILLISECONDS_IN_HOUR = MILLISECONDS_IN_MINUTE * 60;
 
 const MILLISECONDS_IN_DAY = MILLISECONDS_IN_HOUR * 24;
 
+const COUNT_DESTINATIONS_NAMES = 3;
+
 const DateFormat = {
   DAY_MONTH: 'D MMM',
   MONTH_DAY: 'MMM DD',
@@ -30,7 +32,7 @@ const EmptyListMessage = {
   FUTURE: 'There are no future events now',
 };
 
-const InfoMessages = {
+const InfoMessage = {
   LOADING: 'Loading...',
   ERROR: 'Failed to load latest route information',
 };
@@ -74,7 +76,7 @@ const BLANK_POINT = {
   'destination': '',
   'dateFrom': '',
   'dateTo': '',
-  'basePrice': '0',
+  'basePrice': 0,
   'offers': [],
   'isFavorite': false,
 };
@@ -89,7 +91,7 @@ const ApiMethod = {
   GET: 'GET',
   PUT: 'PUT',
   POST: 'POST',
-  DELETE: 'DELETE'
+  DELETE: 'DELETE',
 };
 
 const BlockerTimeLimit = {
@@ -104,6 +106,7 @@ export {
   MILLISECONDS_IN_MINUTE,
   MILLISECONDS_IN_HOUR,
   MILLISECONDS_IN_DAY,
+  COUNT_DESTINATIONS_NAMES,
   DateFormat,
   FilterType,
   DEFAULT_FILTER,
@@ -111,7 +114,7 @@ export {
   DEFAULT_SORT,
   POINTS_TYPE,
   EmptyListMessage,
-  InfoMessages,
+  InfoMessage,
   ModeType,
   UserAction,
   UpdateType,

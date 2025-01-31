@@ -41,15 +41,15 @@ export default class FilterPresenter {
     this.#filterComponent = newFilterComponent;
   }
 
+  //обработка изменений модели данных
+  #modelChangeHandler = () => {
+    this.init();
+  };
+
   //событие изменение фильтра точек маршрута
   #onFilterChange = (filterType) => {
     if (this.#filterModel.filter !== filterType) {
       this.#filterModel.setFilter(UpdateType.MAJOR, filterType);
     }
-  };
-
-  //обновить представления фильтра точек маршрута в случае изменения модели данных
-  #modelChangeHandler = () => {
-    this.init();
   };
 }
