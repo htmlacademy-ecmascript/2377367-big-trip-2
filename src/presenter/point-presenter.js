@@ -20,14 +20,14 @@ export default class PointPresenter {
   #mode = null;
 
   #onModeChange = () => {};
-  #onDataChange = () => {};
+  #onPointChange = () => {};
   #onCancelButtonClick = () => {};
 
-  constructor({container, destinations, offers, onDataChange, onModeChange, onCancelButtonClick, mode}) {
+  constructor({container, destinations, offers, onPointChange, onModeChange, onCancelButtonClick, mode}) {
     this.#pointListContainer = container;
     this.#destinations = destinations;
     this.#offers = offers;
-    this.#onDataChange = onDataChange;
+    this.#onPointChange = onPointChange;
     this.#onModeChange = onModeChange;
     this.#onCancelButtonClick = onCancelButtonClick;
     this.#mode = mode;
@@ -68,17 +68,20 @@ export default class PointPresenter {
     }
   }
 
+  //сброс представления точки маршрута к изначальному состоянию
   resetView = () => {
     if (this.#mode !== ModeType.DEFAULT) {
       this.#closeForm();
     }
   };
 
+  //удаление точки компонентов точки маршрута и формы события
   destroy() {
     remove(this.#pointComponent);
     remove(this.#eventFormComponent);
   }
 
+  //переключение формы в режим сохранения
   setSavingMode() {
     if (this.#mode !== ModeType.DEFAULT) {
       this.#formHeader.updateElement({
@@ -87,18 +90,19 @@ export default class PointPresenter {
       this.#eventFormComponent.updateElement({
         isDisabled: true
       });
-      this.#eventFormElement = this.#eventFormComponent.element.querySelector('form');
+      this.#eventFormElement = this.#eventFormComponent.element.querySelector('.event--edit');
       render(this.#formHeader, this.#eventFormElement);
       render(this.#formDetails, this.#eventFormElement);
     }
   }
 
+  //переключение формы в режим удаления
   setDeletingMode() {
     if (this.#mode !== ModeType.DEFAULT) {
       this.#eventFormComponent.updateElement({
         isDisabled: true
       });
-      this.#eventFormElement = this.#eventFormComponent.element.querySelector('form');
+      this.#eventFormElement = this.#eventFormComponent.element.querySelector('.event--edit');
       render(this.#formHeader, this.#eventFormElement);
       render(this.#formDetails, this.#eventFormElement);
       this.#formHeader.updateElement({
@@ -107,12 +111,13 @@ export default class PointPresenter {
     }
   }
 
+  //обработка ситуации при ошибке
   setAborting() {
     const resetFormElement = () => {
       this.#eventFormComponent.updateElement({
         isDisabled: false
       });
-      this.#eventFormElement = this.#eventFormComponent.element.querySelector('form');
+      this.#eventFormElement = this.#eventFormComponent.element.querySelector('.event--edit');
       render(this.#formHeader, this.#eventFormElement);
       render(this.#formDetails, this.#eventFormElement);
       this.#formHeader.updateElement({
@@ -140,12 +145,6 @@ export default class PointPresenter {
     });
   }
 
-  //событие клик по кнопке открытия формы редактирования точки маршрута
-  #onArrowButtonClick = () => {
-    this.#replacePointToForm();
-    document.addEventListener('keydown', this.#escKeyDownHandler);
-  };
-
   //закрыть форму редактирования точки маршрута
   #closeForm = () => {
     if (this.#mode === ModeType.NEW) {
@@ -153,8 +152,8 @@ export default class PointPresenter {
       this.#onCancelButtonClick();
     } else {
       this.#replaceFormToPoint();
-      this.#formHeader.resetState();
-      this.#formDetails.resetState();
+      this.#formHeader.reset();
+      this.#formDetails.reset();
     }
 
     document.removeEventListener('keydown', this.#escKeyDownHandler);
@@ -163,7 +162,7 @@ export default class PointPresenter {
   //отобразить форму добавления/редактирования точки маршрута
   #renderEventForm() {
     this.#eventFormComponent = new EventForm();
-    this.#eventFormElement = this.#eventFormComponent.element.querySelector('form');
+    this.#eventFormElement = this.#eventFormComponent.element.querySelector('.event--edit');
     this.#formHeader = new EventFormHeader({
       point: this.#content.point,
       destinations: this.#destinations,
@@ -199,6 +198,12 @@ export default class PointPresenter {
     replace(this.#eventFormComponent, this.#pointComponent);
   }
 
+  //событие клик по кнопке открытия формы редактирования точки маршрута
+  #onArrowButtonClick = () => {
+    this.#replacePointToForm();
+    document.addEventListener('keydown', this.#escKeyDownHandler);
+  };
+
   //событие нажать кнопку esc
   #escKeyDownHandler = (event) => {
     if (isEscape(event)) {
@@ -211,7 +216,7 @@ export default class PointPresenter {
   #onFavoriteClick = (actionType, updateType) => {
     const newPoint = {...this.#content.point};
     newPoint.isFavorite = !this.#content.point.isFavorite;
-    this.#onDataChange(actionType, updateType, newPoint);
+    this.#onPointChange(actionType, updateType, newPoint);
   };
 
   //событие изменить тип точки маршрута
@@ -231,11 +236,11 @@ export default class PointPresenter {
 
   //событие клик по кнопке удаления формы редактирования точки маршрута
   #onButtonDeleteClick = (point) => {
-    this.#onDataChange(UserAction.DELETE_EVENT, UpdateType.MINOR, point);
+    this.#onPointChange(UserAction.DELETE_EVENT, UpdateType.MINOR, point);
   };
 
   //событие сохранить форму добавления/изменения точки маршрута
   #onFormSubmit = (actionType, updateType, newPoint) => {
-    this.#onDataChange(actionType, updateType, newPoint);
+    this.#onPointChange(actionType, updateType, newPoint);
   };
 }

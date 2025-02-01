@@ -3,7 +3,7 @@ import {convertDate} from '../utils/date.js';
 import {DateFormat} from '../const.js';
 
 //преобразовать названия пунктов назначения
-const renderDestinations = ({firstDestination, secondDestination, lastDestination, destinationsCount}) => {
+const getInfoDestinations = ({firstDestination, secondDestination, lastDestination, destinationsCount}) => {
   switch (destinationsCount) {
     case 1:
       lastDestination = '';
@@ -13,7 +13,7 @@ const renderDestinations = ({firstDestination, secondDestination, lastDestinatio
       secondDestination = '&mdash;';
       break;
     case 3:
-      secondDestination = `- ${secondDestination} &mdash;`;
+      secondDestination = `&mdash; ${secondDestination} &mdash;`;
       break;
     default:
       secondDestination = '&mdash; ... &mdash;';
@@ -24,7 +24,7 @@ const renderDestinations = ({firstDestination, secondDestination, lastDestinatio
 };
 
 //получить начальную и конечные даты путешествия
-const renderDates = ({firstDate, lastDate}) => {
+const getInfoDates = ({firstDate, lastDate}) => {
   const dateFormat = DateFormat.MONTH_DAY.split(' ').reverse().join(' ');
   return `${convertDate(firstDate, dateFormat)} &mdash; ${convertDate(lastDate, dateFormat)}`;
 };
@@ -33,8 +33,8 @@ const renderDates = ({firstDate, lastDate}) => {
 function createTripTitleTemplate(destinations, dates) {
   return (
     `<div class="trip-info__main">
-      <h1 class="trip-info__title">${renderDestinations(destinations)}</h1>
-      <p class="trip-info__dates">${renderDates(dates)}</p>
+      <h1 class="trip-info__title">${getInfoDestinations(destinations)}</h1>
+      <p class="trip-info__dates">${getInfoDates(dates)}</p>
     </div>`
   );
 }
