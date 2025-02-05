@@ -58,8 +58,8 @@ export default class TripModel extends Observable {
     };
   }
 
-  //обновить точку маршрута
-  async updatePoint(updateType, updatedPoint) {
+   //обновить точку маршрута
+   async updateTripPoint(updateType, updatedPoint) {
     try {
       const response = await this.#apiService.updatePoint(updatedPoint);
       const newPoint = this.#adaptPointToClient(response);
