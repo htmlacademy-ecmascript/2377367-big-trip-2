@@ -1,4 +1,3 @@
-
 import {DateFormat, UserAction, UpdateType} from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
 import {getElementById} from '../utils/common.js';
