@@ -177,101 +177,101 @@ export default class TripPresenter {
     }
   };
 
- //событие добавление/изменение/удаление точки маршрута
- #onPointChange = async (actionType, updateType, newPoint) => {
-  this.#uiBlocker.block();
-  const currentPointPresenter = this.#pointPresenters.get(newPoint.id);
+  //событие добавление/изменение/удаление точки маршрута
+  #onPointChange = async (actionType, updateType, newPoint) => {
+    this.#uiBlocker.block();
+    const currentPointPresenter = this.#pointPresenters.get(newPoint.id);
 
-  switch (actionType) {
-    case UserAction.ADD_EVENT:
-      this.#newPointPresenter.setSavingMode();
-      try {
-        await this.#tripModel.addPoint(updateType, newPoint);
-        this.#newPointPresenter.destroy();
-        this.#newEventButtonComponent.updateElement({isDisabled: false});
-      } catch (error) {
-        this.#newPointPresenter.setAborting();
-      }
-      break;
-    case UserAction.UPDATE_EVENT:
-      currentPointPresenter.setSavingMode();
-      try {
-        await this.#tripModel.updateTripPoint(updateType, newPoint);
-      } catch (error) {
-        currentPointPresenter.setAborting();
-      }
-      break;
-    case UserAction.DELETE_EVENT:
-      currentPointPresenter.setDeletingMode();
-      try {
-        await this.#tripModel.deletePoint(updateType, newPoint);
-      } catch (error) {
-        currentPointPresenter.setAborting();
-      }
-      break;
-  }
-
-  this.#uiBlocker.unblock();
-};
-
-//событие изменения режима точки маршрута
-#onModeChange = (id) => {
-  if (this.#newPointPresenter) {
-    this.#newPointPresenter.destroy();
-    this.#newEventButtonComponent.updateElement({isDisabled: false});
-  }
-
-  this.#pointPresenters.forEach((pointPresenter, index) => {
-    if (index !== id) {
-      pointPresenter.resetView();
+    switch (actionType) {
+      case UserAction.ADD_EVENT:
+        this.#newPointPresenter.setSavingMode();
+        try {
+          await this.#tripModel.addPoint(updateType, newPoint);
+          this.#newPointPresenter.destroy();
+          this.#newEventButtonComponent.updateElement({isDisabled: false});
+        } catch (error) {
+          this.#newPointPresenter.setAborting();
+        }
+        break;
+      case UserAction.UPDATE_EVENT:
+        currentPointPresenter.setSavingMode();
+        try {
+          await this.#tripModel.updateTripTripPoint(updateType, newPoint);
+        } catch (error) {
+          currentPointPresenter.setAborting();
+        }
+        break;
+      case UserAction.DELETE_EVENT:
+        currentPointPresenter.setDeletingMode();
+        try {
+          await this.#tripModel.deletePoint(updateType, newPoint);
+        } catch (error) {
+          currentPointPresenter.setAborting();
+        }
+        break;
     }
-  });
-};
 
-//событие изменение сортировки точек маршрута
-#onSortChange = (name) => {
-  if (this.#currentSort !== name) {
-    this.#currentSort = name;
-    this.#clearTripPoints();
-    this.#renderPageMain();
-  }
-};
+    this.#uiBlocker.unblock();
+  };
 
-//событие клик по кнопке создать новую точку маршрута
-#onNewEventButtonClick = () => {
-  this.#newEventButtonComponent.updateElement({isDisabled: true});
+  //событие изменения режима точки маршрута
+  #onModeChange = (id) => {
+    if (this.#newPointPresenter) {
+      this.#newPointPresenter.destroy();
+      this.#newEventButtonComponent.updateElement({isDisabled: false});
+    }
 
-  if (this.#newPointPresenter) {
-    this.#newPointPresenter.destroy();
-  }
+    this.#pointPresenters.forEach((pointPresenter, index) => {
+      if (index !== id) {
+        pointPresenter.resetView();
+      }
+    });
+  };
 
-  this.#currentSort = DEFAULT_SORT;
-  this.#filterModel.setFilter(UpdateType.MINOR, DEFAULT_FILTER);
+  //событие изменение сортировки точек маршрута
+  #onSortChange = (name) => {
+    if (this.#currentSort !== name) {
+      this.#currentSort = name;
+      this.#clearTripPoints();
+      this.#renderPageMain();
+    }
+  };
 
-  if (!this.#listComponent) {
-    this.#renderPointsList();
-  }
+  //событие клик по кнопке создать новую точку маршрута
+  #onNewEventButtonClick = () => {
+    this.#newEventButtonComponent.updateElement({isDisabled: true});
 
-  this.#newPointPresenter = new PointPresenter({
-    container: this.#listComponent.element,
-    destinations: this.#tripModel.destinations,
-    offers: this.#tripModel.offers,
-    onPointChange: this.#onPointChange,
-    onModeChange: this.#onModeChange,
-    onCancelButtonClick: this.#onCancelButtonClick,
-    mode: ModeType.NEW
-  });
+    if (this.#newPointPresenter) {
+      this.#newPointPresenter.destroy();
+    }
 
-  this.#newPointPresenter.init();
-};
+    this.#currentSort = DEFAULT_SORT;
+    this.#filterModel.setFilter(UpdateType.MINOR, DEFAULT_FILTER);
 
-//событие клик по кнопке отменить добавление новой точки маршрута
-#onCancelButtonClick = () => {
-  this.#newEventButtonComponent.updateElement({isDisabled: false});
-  const filteredPoints = filterPoints(this.#filterModel.filter, this.#tripModel.tripPoints);
+    if (!this.#listComponent) {
+      this.#renderPointsList();
+    }
 
-  if (filteredPoints.length === 0) {
-    this.#renderPageMain();
-  }
-};
+    this.#newPointPresenter = new PointPresenter({
+      container: this.#listComponent.element,
+      destinations: this.#tripModel.destinations,
+      offers: this.#tripModel.offers,
+      onPointChange: this.#onPointChange,
+      onModeChange: this.#onModeChange,
+      onCancelButtonClick: this.#onCancelButtonClick,
+      mode: ModeType.NEW
+    });
+
+    this.#newPointPresenter.init();
+  };
+
+  //событие клик по кнопке отменить добавление новой точки маршрута
+  #onCancelButtonClick = () => {
+    this.#newEventButtonComponent.updateElement({isDisabled: false});
+    const filteredPoints = filterPoints(this.#filterModel.filter, this.#tripModel.tripPoints);
+
+    if (!filteredPoints.length) {
+      this.#renderPageMain();
+    }
+  };
 }
