@@ -1,4 +1,3 @@
-
 import TripCost from '../view/trip-cost.js';
 import TripTitle from '../view/trip-title.js';
 import TripInfo from '../view/trip-information.js';
