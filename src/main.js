@@ -16,7 +16,7 @@ const filterModel = new FilterModel();
 
 new HeaderPresenter({headerContainer, tripModel});
 const filterPresenter = new FilterPresenter({container: filterContainer, filterModel, tripModel});
-const tripPresenter = new TripPresenter({container: tripContainer, tripModel, filterModel});
+const tripPresenter = new TripPresenter({container: tripContainer, tripModel, filterModel, headerContainer});
 
 tripModel.init();
 filterPresenter.init();

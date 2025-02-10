@@ -6,7 +6,7 @@ function createButtonTemplate({isDisabled}) {
 }
 
 //класс для визуального представления кнопки добавления новой точки маршрута
-export default class NewEventButton extends AbstractStatefulView {
+export default class NewEventButtonView extends AbstractStatefulView {
   #onNewEventButtonClick = () => {};
 
   constructor({onNewEventButtonClick}) {

@@ -1,6 +1,6 @@
-import TripCost from '../view/trip-cost.js';
-import TripTitle from '../view/trip-title.js';
-import TripInfo from '../view/trip-information.js';
+import TripCostView from '../view/trip-cost-view.js';
+import TripTitleView from '../view/trip-title-view.js';
+import TripInfoView from '../view/trip-info-view.js';
 import {remove, render, RenderPosition, replace} from '../framework/render.js';
 import {DEFAULT_SORT, UpdateType, COUNT_DESTINATIONS_NAMES} from '../const.js';
 import {sortPoints} from '../utils/common.js';
@@ -25,22 +25,22 @@ export default class HeaderPresenter {
     this.#offers = this.#tripModel.offers;
     this.#points = this.#tripModel.tripPoints;
 
-    if (this.#points.length) {
+    if (this.#points.length > 0) {
       sortPoints(DEFAULT_SORT, this.#points);
       const destinations = this.#getTripTitleInfo();
       const dates = this.#getFirstLastDates();
       const previousTripInfoComponent = this.#tripInfoComponent;
-      const newTripInfoComponent = new TripInfo();
+      const newTripInfoComponent = new TripInfoView();
 
-      if (!previousTripInfoComponent) {
+      if (previousTripInfoComponent === null) {
         render(newTripInfoComponent, this.#headerContainer, RenderPosition.AFTERBEGIN);
       } else {
         replace(newTripInfoComponent, previousTripInfoComponent);
         remove(previousTripInfoComponent);
       }
 
-      render(new TripTitle({destinations, dates}), newTripInfoComponent.element);
-      render(new TripCost(this.#calculateTotalPrice()), newTripInfoComponent.element);
+      render(new TripTitleView({destinations, dates}), newTripInfoComponent.element);
+      render(new TripCostView(this.#calculateTotalPrice()), newTripInfoComponent.element);
       this.#tripInfoComponent = newTripInfoComponent;
       return;
     }

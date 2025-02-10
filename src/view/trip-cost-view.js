@@ -6,7 +6,7 @@ function createTotalCostTemplate(cost) {
 }
 
 //класс для визуального представления общей стоимости путешествия
-export default class TripCost extends AbstractView {
+export default class TripCostView extends AbstractView {
   #cost = null;
 
   constructor(cost) {
