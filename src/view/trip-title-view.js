@@ -40,7 +40,7 @@ function createTripTitleTemplate(destinations, dates) {
 }
 
 //класс для визуального представления заголовка путешествия
-export default class TripTitle extends AbstractView {
+export default class TripTitleView extends AbstractView {
   #destinations = null;
   #dates = null;
 

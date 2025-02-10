@@ -41,17 +41,23 @@ function compareDurations(firstPoint, secondPoint) {
   return secondPointDuration - firstPointDuration;
 }
 
+const isPointPast = (dateTo) => dayjs().isAfter(dateTo, 'day');
+
+const isPointFuture = (dateFrom) => dayjs().isBefore(dateFrom, 'day');
+
+const isPointPresent = (dateFrom, dateTo) => !isPointFuture(dateFrom) && !isPointPast(dateTo);
+
 //фильтр точек маршрута
 function filterPoints(name, points) {
   switch (name) {
     case FilterType.EVERYTHING:
       return points;
     case FilterType.FUTURE:
-      return points.filter((item) => dayjs().isBefore(dayjs(item.dateFrom)));
+      return points.filter((item) => isPointFuture(item.dateFrom));
     case FilterType.PRESENT:
-      return points.filter((item) => dayjs().isBetween(dayjs(item.dateTo), dayjs(item.dateFrom)));
+      return points.filter((item) => isPointPresent(item.dateFrom, item.dateTo));
     case FilterType.PAST:
-      return points.filter((item) => dayjs().isAfter(dayjs(item.dateTo)));
+      return points.filter((item) => isPointPast(item.dateTo));
   }
 }
 

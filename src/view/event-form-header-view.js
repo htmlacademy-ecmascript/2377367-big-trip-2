@@ -93,7 +93,7 @@ function createEventFormHeaderTemplate (point, destinations, mode){
 }
 
 //класс для визуального представления заголовка формы добавления/редактирования точки маршрута
-export default class EventFormHeader extends AbstractStatefulView {
+export default class EventFormHeaderView extends AbstractStatefulView {
   #point = null;
   #destinations = null;
   #mode = null;

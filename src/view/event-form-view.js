@@ -10,7 +10,7 @@ function createEventFormTemplate({isDisabled}) {
 }
 
 //класс для визуального представления формы создания/редактирования точки маршрута
-export default class EventForm extends AbstractStatefulView {
+export default class EventFormView extends AbstractStatefulView {
 
   constructor() {
     super();
@@ -22,6 +22,8 @@ export default class EventForm extends AbstractStatefulView {
     return createEventFormTemplate(this._state);
   }
 
-  _restoreHandlers() {}
+  _restoreHandlers() {
+    return undefined;
+  }
 
 }

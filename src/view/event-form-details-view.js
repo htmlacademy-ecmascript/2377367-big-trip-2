@@ -35,7 +35,7 @@ function createOffersListTemplate(selectedOffers, offers) {
 }
 
 //создать изображение пункт назначения
-function createPicture(pictures) {
+function createPictureTemplate(pictures) {
   if (pictures.length === 0) {
     return '';
   }
@@ -50,7 +50,7 @@ function createPicture(pictures) {
 }
 
 //создать блок пункта назначения
-function createDestination(destination) {
+function createDestinationTemplate(destination) {
   if (!destination || (!destination.description && destination.pictures.length === 0)) {
     return '';
   }
@@ -59,7 +59,7 @@ function createDestination(destination) {
     `<section class="event__section event__section--destination">
       <h3 class="event__section-title event__section-title--destination">Destination</h3>
       <p class="event__destination-description">${destination.description}</p>
-      ${createPicture(destination.pictures)}
+      ${createPictureTemplate(destination.pictures)}
     </section>`
   );
 }
@@ -71,13 +71,13 @@ function createEventFormDetailsTemplate(point, offers, destination) {
   return (
     `<section class="event__details">
       ${createOffersListTemplate(point.offers, offersPoint)}
-      ${createDestination(destination)}
+      ${createDestinationTemplate(destination)}
     </section>`
   );
 }
 
 //класс для визуального представления основного содержания формы добавления/редактирования точки маршрута
-export default class EventFormDetails extends AbstractStatefulView {
+export default class EventFormDetailsView extends AbstractStatefulView {
   #point = null;
   #offers = null;
   #destination = null;
@@ -124,6 +124,10 @@ export default class EventFormDetails extends AbstractStatefulView {
   //если кол-во дополнительных предложений пусто
   #isOffersEmpty() {
     const currentOffers = this.#offers.find((item) => item.type === this._state.point.type.toLowerCase());
+
+    if (!currentOffers || !currentOffers.offers) {
+      return true;
+    }
     return currentOffers.offers.length === 0;
   }
 

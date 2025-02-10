@@ -1,10 +1,10 @@
 import {UpdateType, UserAction, ModeType, BLANK_POINT} from '../const.js';
 import {remove, render, replace, RenderPosition} from '../framework/render.js';
 import {isEscape} from '../utils/common.js';
-import PointView from '../view/point.js';
-import EventForm from '../view/event-form.js';
-import EventFormHeader from '../view/event-form-header.js';
-import EventFormDetails from '../view/event-form-details.js';
+import PointView from '../view/point-view.js';
+import EventFormView from '../view/event-form-view.js';
+import EventFormHeaderView from '../view/event-form-header-view.js';
+import EventFormDetailsView from '../view/event-form-details-view.js';
 
 //класс для взаимодействия данных и интерфейса точки маршрута
 export default class PointPresenter {
@@ -161,9 +161,9 @@ export default class PointPresenter {
 
   //отобразить форму добавления/редактирования точки маршрута
   #renderEventForm() {
-    this.#eventFormComponent = new EventForm();
+    this.#eventFormComponent = new EventFormView();
     this.#eventFormElement = this.#eventFormComponent.element.querySelector('.event--edit');
-    this.#formHeader = new EventFormHeader({
+    this.#formHeader = new EventFormHeaderView({
       point: this.#content.point,
       destinations: this.#destinations,
       onTypeChange: this.#onTypeChange,
@@ -174,7 +174,7 @@ export default class PointPresenter {
       mode: (this.#mode === ModeType.DEFAULT) ? ModeType.EDIT : this.#mode
     });
 
-    this.#formDetails = new EventFormDetails({
+    this.#formDetails = new EventFormDetailsView({
       point: this.#content.point,
       offers: this.#offers,
       destination: this.#content.destination,

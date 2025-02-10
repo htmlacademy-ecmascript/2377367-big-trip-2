@@ -1,18 +1,18 @@
 import {render, remove, replace} from '../framework/render.js';
 import {EmptyListMessage, InfoMessage, UpdateType, UserAction, DEFAULT_SORT, DEFAULT_FILTER, ModeType, BlockerTimeLimit} from '../const.js';
-import SortListView from '../view/sort.js';
-import PointListView from '../view/point-list.js';
-import MessageView from '../view/message.js';
+import SortListView from '../view/sort-list-view.js';
+import PointListView from '../view/point-list-view.js';
+import MessageView from '../view/message-view.js';
 import PointPresenter from './point-presenter.js';
 import {sortPoints} from '../utils/common.js';
 import {filterPoints} from '../utils/date.js';
-import NewEventButton from '../view/new-event-button.js';
+import NewEventButtonView from '../view/new-event-button-view.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
 //класс для взаимодействия данных и интерфейса списка точек маршрута
 export default class TripPresenter {
   #listComponent = null;
-  #mainElement = document.querySelector('.trip-main');
+  #headerContainer = null;
   #listContainer = null;
   #tripModel = null;
   #filterModel = null;
@@ -27,10 +27,11 @@ export default class TripPresenter {
   #uiBlocker = null;
   #newPointPresenter = null;
 
-  constructor({container, tripModel, filterModel}) {
+  constructor({container, tripModel, filterModel, headerContainer}) {
     this.#listContainer = container;
     this.#tripModel = tripModel;
     this.#filterModel = filterModel;
+    this.#headerContainer = headerContainer;
 
     this.#tripModel.addObserver(this.#modelChangeHandler);
     this.#filterModel.addObserver(this.#modelChangeHandler);
@@ -44,6 +45,7 @@ export default class TripPresenter {
   init() {
     this.#renderNewEventButton();
     if (this.#isLoading) {
+      this.#newEventButtonComponent.updateElement({isDisabled: true});
       remove(this.#errorMessageComponent);
       this.#loadingComponent = new MessageView({text: InfoMessage.LOADING});
       render(this.#loadingComponent, this.#listContainer);
@@ -56,7 +58,7 @@ export default class TripPresenter {
   //отобразить основную область страницы
   #renderPageMain() {
     const filteredPoints = filterPoints(this.#filterModel.filter, this.#tripModel.tripPoints);
-    if (!filteredPoints.length) {
+    if (filteredPoints.length === 0) {
       remove(this.#sortViewComponent);
       this.#sortViewComponent = null;
       this.#renderEmptyPointsList();
@@ -86,8 +88,8 @@ export default class TripPresenter {
   //отобразить кнопку добавить новую точку маршрута
   #renderNewEventButton() {
     if (this.#newEventButtonComponent === null) {
-      this.#newEventButtonComponent = new NewEventButton({onNewEventButtonClick: this.#onNewEventButtonClick});
-      render(this.#newEventButtonComponent, this.#mainElement);
+      this.#newEventButtonComponent = new NewEventButtonView({onNewEventButtonClick: this.#onNewEventButtonClick});
+      render(this.#newEventButtonComponent, this.#headerContainer);
     }
   }
 
@@ -163,6 +165,7 @@ export default class TripPresenter {
         this.init();
         break;
       case UpdateType.INIT:
+        this.#newEventButtonComponent.updateElement({isDisabled: false});
         this.#isLoading = false;
         remove(this.#loadingComponent);
         this.init();
@@ -196,7 +199,7 @@ export default class TripPresenter {
       case UserAction.UPDATE_EVENT:
         currentPointPresenter.setSavingMode();
         try {
-          await this.#tripModel.updateTripTripPoint(updateType, newPoint);
+          await this.#tripModel.updateTripPoint(updateType, newPoint);
         } catch (error) {
           currentPointPresenter.setAborting();
         }
@@ -270,7 +273,7 @@ export default class TripPresenter {
     this.#newEventButtonComponent.updateElement({isDisabled: false});
     const filteredPoints = filterPoints(this.#filterModel.filter, this.#tripModel.tripPoints);
 
-    if (!filteredPoints.length) {
+    if (filteredPoints.length === 0) {
       this.#renderPageMain();
     }
   };

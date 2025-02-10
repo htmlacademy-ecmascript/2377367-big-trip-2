@@ -6,7 +6,7 @@ function createTripInfoTemplate() {
 }
 
 //класс для визуального представления общей информации о путешествии
-export default class TripInfo extends AbstractView {
+export default class TripInfoView extends AbstractView {
 
   get template() {
     return createTripInfoTemplate();
